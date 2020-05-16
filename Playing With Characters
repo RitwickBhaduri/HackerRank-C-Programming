@@ -1,0 +1,16 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+int main() 
+{
+    char c,s[10];
+    char sen[50];
+    scanf("%c",&c);
+    scanf("%s\n",s);
+    fgets(sen,sizeof(sen),stdin);
+    printf("%c\n%s\n",c,s);
+    puts(sen);
+    return 0;
+}
