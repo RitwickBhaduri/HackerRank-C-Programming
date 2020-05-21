@@ -1,0 +1,66 @@
+void print_all_packages(town t) {
+    printf("%s:\n", t.name);
+    for(int i=0; i<t.offices_count; i++){
+        printf("\t%d:\n", i);
+        for(int j=0; j<t.offices[i].packages_count; j++){
+            printf("\t\t%s\n", t.offices[i].packages[j].id);
+        }
+    }
+}
+
+void send_all_acceptable_packages(town* source, int source_office_index, town* target, int target_office_index) {
+    int count, k, max, min, mxg;
+    
+    for(int i=0; i<source->offices[source_office_index].packages_count; i++){
+        mxg=source->offices[source_office_index].packages[i].weight;
+        min=target->offices[target_office_index].min_weight;
+        max=target->offices[target_office_index].max_weight;
+        
+        if((min<=mxg)&&(mxg<=max)){
+            count=target->offices[target_office_index].packages_count;
+						target->offices[target_office_index].packages=realloc(target->offices[target_office_index].packages, sizeof(package) * (count+1)); 
+						
+target->offices[target_office_index].packages[count]=source->offices[source_office_index].packages[i];
+            
+            count=source->offices[source_office_index].packages_count;
+            k=i;
+
+            while(k<count-1){
+                package temp=source->offices[source_office_index].packages[k];
+source->offices[source_office_index].packages[k]=source->offices[source_office_index].packages[k+1];
+                source->offices[source_office_index].packages[k+1]=temp;
+                k++;
+            }
+            
+            source->offices[source_office_index].packages=
+            realloc(source->offices[source_office_index].packages, sizeof(package) * (count-1));
+            
+            target->offices[target_office_index].packages_count++;
+            source->offices[source_office_index].packages_count--;
+            i--;
+        }
+    }
+}
+
+town town_with_most_packages(town* towns, int towns_count) {
+    int max=-1, sum, r;
+    while(--towns_count>-1){
+        sum=0;
+        for(int i=0; i<towns[towns_count].offices_count; i++){
+            sum+=towns[towns_count].offices[i].packages_count;
+        }
+        if(sum>max){max=sum;r=towns_count;}
+    }
+
+    return towns[r];
+}
+
+town* find_town(town* towns, int towns_count, char* name) {
+    int i;
+    while(--towns_count>-1){
+        if(strcmp(name, towns[towns_count].name)==0){
+            i=towns_count;
+        }
+    }
+    return towns+i;
+}
